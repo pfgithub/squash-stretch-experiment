@@ -15,6 +15,7 @@ let ball = {
   bounceTimer: 0,
   bounceMax: 0,
   bounceStart: null,
+  bounceDir: null,
 };
 
 let lastMouse = { x: 0, y: 0 };
@@ -44,7 +45,9 @@ function drawBall() {
     }
 
     let factor = Math.sin(percent * Math.PI) * percent * (1 - percent) * 4;
-    y += (factor * ball.radius) * (stretch - 1);
+    let movement = (factor * ball.radius) * (stretch - 1);
+    x += ball.bounceDir[0] * movement;
+    y += ball.bounceDir[1] * movement;
     stretch = blend(stretch, 1 / stretch, factor);
 
 
@@ -85,6 +88,7 @@ function updateBall() {
       ball.x = Math.max(ball.radius, Math.min(ball.x, canvas.width - ball.radius));
       ball.bounceTimer = 1;
       ball.bounceMax = 10;
+      ball.bounceDir = [ball.x < canvas.width / 2 ? -1 : 1, 0];
     }
 
     if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
@@ -93,6 +97,7 @@ function updateBall() {
       ball.y = Math.max(ball.radius, Math.min(ball.y, canvas.height - ball.radius));
       ball.bounceTimer = 1;
       ball.bounceMax = 10;
+      ball.bounceDir = [0, ball.y < canvas.height / 2 ? -1 : 1];
     }
 
     // Air resistance
